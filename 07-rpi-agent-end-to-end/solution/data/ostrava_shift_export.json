@@ -1,0 +1,29 @@
+{
+  "site": "OSR",
+  "exportVersion": "2.1",
+  "generatedAt": "2026-11-02T22:05:00+01:00",
+  "shifts": [
+    {
+      "line": "L1",
+      "date": "2026-11-02",
+      "shift": "A",
+      "plannedTime": {"value": 8, "unit": "h"},
+      "unplannedStops": [
+        {"reason": "jam", "minutes": 22},
+        {"reason": "material wait", "minutes": 15},
+        {"reason": "changeover", "minutes": 10}
+      ],
+      "idealCycle": {"value": 0.5, "unit": "min"},
+      "counts": {"total": 780, "scrap": 25, "rework": 14}
+    },
+    {
+      "line": "L1",
+      "date": "2026-11-02",
+      "shift": "B",
+      "plannedTime": {"value": 8, "unit": "h"},
+      "unplannedStops": [{"reason": "tool break", "minutes": 55}],
+      "idealCycle": {"value": 0.5, "unit": "min"},
+      "counts": {"total": 712, "scrap": 30, "rework": 5}
+    }
+  ]
+}

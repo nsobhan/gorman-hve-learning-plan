@@ -1,0 +1,5 @@
+planta,linea,fecha,turno,horas_planeadas,horas_paro,ciclo_ideal_seg,piezas_totales,piezas_buenas
+MTY,L1,2026-11-02,A,8.0,0.783333,30,780,741
+MTY,L1,2026-11-02,B,8.0,1.25,30,701,662
+MTY,L2,2026-11-02,A,8.0,0.5,40,650,639
+MTY,L2,2026-11-02,B,8.0,8.0,40,0,0

@@ -1,0 +1,353 @@
+<title>Gorman HVE Learning Plan</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: a plant-floor work instruction — signage-style condensed headings, steel neutrals, one safety-amber signal used only where the numbers matter. */
+:root {
+  --bg: #f3f5f7;
+  --panel: #ffffff;
+  --ink: #17212b;
+  --muted: #566573;
+  --line: #d5dce3;
+  --steel: #2f4a63;
+  --amber: #c77700;
+  --amber-soft: #fff1d6;
+  --bad: #b42318;
+  --bad-soft: #fde8e6;
+  --good: #1b7a46;
+  --good-soft: #e3f4ea;
+  --display: "Barlow Condensed", "Arial Narrow", system-ui, sans-serif;
+  --body: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #10161c; --panel: #18212a; --ink: #e6ecf1; --muted: #9aa8b5; --line: #2b3742;
+    --steel: #9cc0de; --amber: #f2a93b; --amber-soft: #3a2a10;
+    --bad: #ff8a7a; --bad-soft: #3b1c19; --good: #6fd59a; --good-soft: #14301f;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #10161c; --panel: #18212a; --ink: #e6ecf1; --muted: #9aa8b5; --line: #2b3742;
+  --steel: #9cc0de; --amber: #f2a93b; --amber-soft: #3a2a10;
+  --bad: #ff8a7a; --bad-soft: #3b1c19; --good: #6fd59a; --good-soft: #14301f;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--bg); color: var(--ink); font-family: var(--body);
+  font-size: 16px; line-height: 1.55;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+.wrap { max-width: 1080px; margin: 0 auto; padding-block: 40px 64px; display: grid; gap: 56px; }
+h1, h2, h3 { font-family: var(--display); text-wrap: balance; margin: 0; line-height: 1.05; }
+h1 { font-size: clamp(2.4rem, 6vw, 3.8rem); font-weight: 700; letter-spacing: 0.005em; }
+h2 { font-size: 2rem; font-weight: 600; }
+h3 { font-size: 1.3rem; font-weight: 600; }
+p { margin: 0; max-width: 65ch; }
+.eyebrow { font-family: var(--mono); font-size: 0.75rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
+.lede { font-size: 1.15rem; color: var(--muted); }
+section { display: grid; gap: 20px; }
+.sec-head { display: grid; gap: 8px; }
+code, .mono { font-family: var(--mono); font-size: 0.88em; }
+code { background: var(--panel); border: 1px solid var(--line); padding: 1px 6px; border-radius: 4px; }
+
+/* Hero */
+header { display: grid; gap: 18px; }
+.principle { font-family: var(--display); font-size: 1.45rem; font-weight: 500; color: var(--steel); }
+
+/* Problem readout */
+.readout { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+.gauge { background: var(--panel); border: 1px solid var(--line); border-radius: 6px; padding: 16px; display: grid; gap: 6px; align-content: start; }
+.gauge .plant { font-family: var(--mono); font-size: 0.75rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
+.gauge .val { font-family: var(--display); font-size: 2.6rem; font-weight: 700; line-height: 1; font-variant-numeric: tabular-nums; }
+.gauge .why { font-size: 0.88rem; color: var(--muted); }
+.gauge.bad .val { color: var(--bad); }
+.gauge.std { background: var(--amber-soft); border-color: var(--amber); }
+.gauge.std .val { color: var(--amber); }
+.caption { font-size: 0.9rem; color: var(--muted); }
+
+/* Before / after table */
+.tbl-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 6px; background: var(--panel); }
+table { border-collapse: collapse; width: 100%; min-width: 560px; }
+th, td { text-align: left; padding: 12px 16px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font-family: var(--mono); font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); font-weight: 500; }
+tr:last-child td { border-bottom: 0; }
+td:first-child { font-weight: 600; white-space: nowrap; }
+.before { color: var(--bad); }
+.after { color: var(--good); }
+
+/* RPI flow */
+.flow { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0; border: 1px solid var(--line); border-radius: 6px; background: var(--panel); overflow: hidden; }
+.stage { padding: 18px; display: grid; gap: 8px; align-content: start; border-right: 1px solid var(--line); position: relative; }
+.stage:last-child { border-right: 0; }
+.stage .cmd { font-family: var(--mono); font-size: 0.85rem; color: var(--steel); }
+.stage p { font-size: 0.92rem; }
+.stage .art { font-family: var(--mono); font-size: 0.75rem; color: var(--muted); word-break: break-all; }
+.stage .n { font-family: var(--display); font-size: 1rem; font-weight: 600; color: var(--amber); }
+.note { font-size: 0.92rem; color: var(--muted); }
+
+/* Module catalog */
+.filters { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip { font: 500 0.9rem var(--body); color: var(--ink); background: var(--panel); border: 1px solid var(--line); border-radius: 999px; padding: 6px 14px; cursor: pointer; }
+.chip:hover { border-color: var(--steel); }
+.chip[aria-pressed="true"] { background: var(--steel); border-color: var(--steel); color: var(--bg); }
+.chip:focus-visible, a:focus-visible { outline: 2px solid var(--amber); outline-offset: 2px; }
+.path-desc { font-size: 0.95rem; color: var(--muted); min-height: 1.5em; }
+.modules { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 12px; }
+.mod { background: var(--panel); border: 1px solid var(--line); border-radius: 6px; padding: 14px 16px; display: grid; gap: 6px; align-content: start; transition: opacity .15s; }
+.mod[data-off="true"] { opacity: 0.32; }
+.mod .top { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+.mod .id { font-family: var(--mono); font-size: 0.8rem; color: var(--amber); font-weight: 500; }
+.mod .time { font-family: var(--mono); font-size: 0.75rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+.mod h3 { font-size: 1.15rem; }
+.mod .use { font-size: 0.85rem; color: var(--muted); }
+.mod .folder { font-family: var(--mono); font-size: 0.72rem; color: var(--muted); word-break: break-all; }
+.total { font-family: var(--mono); font-size: 0.85rem; color: var(--muted); }
+
+/* Schedule */
+.days { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 12px; }
+.day { border-top: 3px solid var(--steel); background: var(--panel); border-radius: 0 0 6px 6px; padding: 14px; display: grid; gap: 6px; align-content: start; }
+.day .d { font-family: var(--display); font-size: 1.2rem; font-weight: 600; }
+.day .m { font-family: var(--mono); font-size: 0.8rem; color: var(--amber); }
+.day p { font-size: 0.9rem; }
+
+/* Demo */
+.two { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 16px; }
+.box { background: var(--panel); border: 1px solid var(--line); border-radius: 6px; padding: 18px; display: grid; gap: 10px; align-content: start; }
+.box ol, .box ul { margin: 0; padding-left: 20px; display: grid; gap: 6px; }
+.box li { font-size: 0.95rem; }
+.box .mono { color: var(--muted); }
+
+/* Start */
+.start { background: var(--steel); color: var(--bg); border-radius: 8px; padding: 24px; display: grid; gap: 14px; }
+.start h2 { color: var(--bg); }
+.cmdline { display: flex; gap: 8px; align-items: stretch; flex-wrap: wrap; }
+.cmdline pre { margin: 0; flex: 1 1 280px; min-width: 0; overflow-x: auto; background: var(--bg); color: var(--ink); border-radius: 6px; padding: 12px 14px; font-family: var(--mono); font-size: 0.85rem; }
+.copy { font: 600 0.85rem var(--body); background: var(--amber); color: #17212b; border: 0; border-radius: 6px; padding: 0 16px; cursor: pointer; min-height: 44px; }
+.copy:focus-visible { outline: 2px solid var(--bg); outline-offset: 2px; }
+.start p { color: var(--bg); opacity: 0.9; }
+footer { font-size: 0.85rem; color: var(--muted); display: grid; gap: 6px; }
+a { color: var(--steel); }
+
+@media (max-width: 820px) {
+  .readout { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .flow { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+  .stage:nth-child(2) { border-right: 0; }
+  .stage:nth-child(-n+2) { border-bottom: 1px solid var(--line); }
+  .days { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+  .two { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-width: 480px) {
+  .flow { grid-template-columns: minmax(0, 1fr); }
+  .stage { border-right: 0; border-bottom: 1px solid var(--line); }
+  .stage:last-child { border-bottom: 0; }
+  .days { grid-template-columns: minmax(0, 1fr); }
+  .gauge .val { font-size: 2.1rem; }
+}
+@media (prefers-reduced-motion: reduce) { .mod { transition: none; } }
+</style>
+
+<div class="wrap">
+
+<header>
+  <span class="eyebrow">Self-paced course + customer demo · microsoft/hve-core</span>
+  <h1>Standardizing Gorman Manufacturing with HVE Core</h1>
+  <p class="lede">A hands-on learning plan for Hypervelocity Engineering (HVE) Core, built around one fictional manufacturer. Learners fix a real KPI problem with HVE's agents, instructions and skills. 18 modules, copy-paste prompts, a reference solution for each step, and a demo script you can run for customers.</p>
+  <p class="principle">“AI carries the rules, humans keep the judgment.”</p>
+</header>
+
+<section aria-labelledby="problem">
+  <div class="sec-head">
+    <span class="eyebrow">The problem</span>
+    <h2 id="problem">One shift, three plants, three answers</h2>
+    <p>Gorman’s plants each calculate OEE (Overall Equipment Effectiveness) with their own script. Here is Line 1, shift A on 2 Nov 2026, run through each plant’s code:</p>
+  </div>
+  <div class="readout">
+    <div class="gauge bad"><span class="plant">Detroit · DET</span><span class="val">69.6%</span><span class="why">Divides performance by planned time, not run time</span></div>
+    <div class="gauge bad"><span class="plant">Monterrey · MTY</span><span class="val">81.2%</span><span class="why">Leaves out quality, then crashes on a zero-production shift</span></div>
+    <div class="gauge bad"><span class="plant">Pune · PNQ</span><span class="val">72.9%</span><span class="why">Rounds each factor before multiplying</span></div>
+    <div class="gauge std"><span class="plant">Standard GMS-OPS-007</span><span class="val">77.2%</span><span class="why">A 0.902 × P 0.901 × Q 0.950</span></div>
+  </div>
+  <p class="caption">The scripts also hold fake hard-coded credentials and a SQL injection risk, put there on purpose so the security modules have something to find. Gorman, its plants, data and credentials are all fictional.</p>
+</section>
+
+<section aria-labelledby="levels">
+  <div class="sec-head">
+    <span class="eyebrow">What gets standardized</span>
+    <h2 id="levels">Three levels of standardization</h2>
+  </div>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Level</th><th>Before</th><th>After, with HVE Core</th><th>HVE pieces used</th></tr></thead>
+      <tbody>
+        <tr><td>The KPI</td><td class="before">3 formulas, 1 crash</td><td class="after">1 tested library; golden shift = 77.2% for all 4 plant formats</td><td>RPI skills, RPI Agent</td></tr>
+        <tr><td>The engineering</td><td class="before">Each plant has its own habits</td><td class="after">Shared rules Copilot applies automatically</td><td>Instructions, skills, custom agents</td></tr>
+        <tr><td>The process</td><td class="before">Change first, explain later</td><td class="after">Research → Plan → Implement → Review, with evidence an auditor can read</td><td>RPI artifacts, code and security review</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section aria-labelledby="rpi">
+  <div class="sec-head">
+    <span class="eyebrow">The core method</span>
+    <h2 id="rpi">RPI: research before code</h2>
+    <p>When the AI knows it isn’t allowed to implement yet, it stops writing plausible code and starts finding verified facts. Each phase writes an artifact, so you can clear the chat between phases without losing context.</p>
+  </div>
+  <div class="flow">
+    <div class="stage"><span class="n">Phase 1</span><h3>Research</h3><span class="cmd">/rpi-research</span><p>Finds every way the plant scripts differ from the standard, with file references.</p><span class="art">.copilot-tracking/research/</span></div>
+    <div class="stage"><span class="n">Phase 2</span><h3>Plan</h3><span class="cmd">/rpi-plan critique=standard</span><p>Task-level plan plus an independent critique: the evidence Gorman’s change policy asks for.</p><span class="art">.copilot-tracking/plans/</span></div>
+    <div class="stage"><span class="n">Phase 3</span><h3>Implement</h3><span class="cmd">/rpi-implement</span><p>Builds the shared <code>gorman_oee</code> library by following the plan, and logs every change.</p><span class="art">.copilot-tracking/changes/</span></div>
+    <div class="stage"><span class="n">Phase 4</span><h3>Review</h3><span class="cmd">/rpi-review</span><p>Checks the changes against the plan and sends each follow-up to the right phase.</p><span class="art">.copilot-tracking/reviews/</span></div>
+  </div>
+  <p class="note">Module 07 then runs all four phases in one session with <strong>RPI Agent</strong> to onboard a fourth plant, Ostrava, which exports JSON instead of CSV.</p>
+</section>
+
+<section aria-labelledby="catalog">
+  <div class="sec-head">
+    <span class="eyebrow">18 modules · one folder per HVE usage</span>
+    <h2 id="catalog">Module catalog</h2>
+    <p>Pick a learning path to highlight its modules. Each module folder has a <code>README.md</code>, a <code>prompts.md</code> of copy-paste prompts, and, where it applies, a <code>solution/</code> folder.</p>
+  </div>
+  <div class="filters" role="group" aria-label="Learning path">
+    <button class="chip" type="button" id="path-all" data-path="all" aria-pressed="true">All modules</button>
+    <button class="chip" type="button" id="path-core" data-path="core" aria-pressed="false">Core</button>
+    <button class="chip" type="button" id="path-practitioner" data-path="practitioner" aria-pressed="false">Practitioner</button>
+    <button class="chip" type="button" id="path-builder" data-path="builder" aria-pressed="false">Builder</button>
+    <button class="chip" type="button" id="path-planner" data-path="planner" aria-pressed="false">Planner</button>
+    <button class="chip" type="button" id="path-leader" data-path="leader" aria-pressed="false">Leader</button>
+  </div>
+  <p class="path-desc" id="path-desc" aria-live="polite"></p>
+  <div class="modules" id="modules"></div>
+</section>
+
+<section aria-labelledby="week">
+  <div class="sec-head">
+    <span class="eyebrow">Suggested schedule · about 1.5–2 hours a day</span>
+    <h2 id="week">Five days to an HVE-standardized repo</h2>
+  </div>
+  <div class="days">
+    <div class="day"><span class="d">Day 1</span><span class="m">00 · 01 · 02</span><p>Gorman’s standards apply automatically in Copilot.</p></div>
+    <div class="day"><span class="d">Day 2</span><span class="m">03 · 04 · 05</span><p>The shared library returns 77.2% for every plant format.</p></div>
+    <div class="day"><span class="d">Day 3</span><span class="m">06 · 07 · 08</span><p>A reviewed change, and Ostrava onboarded with RPI Agent.</p></div>
+    <div class="day"><span class="d">Day 4</span><span class="m">09 · 12 · 10</span><p>Audit finding closed, incident explained, decision recorded.</p></div>
+    <div class="day"><span class="d">Day 5</span><span class="m">13 · 14 · 15 · 17</span><p>Gorman’s own skills and agent, plus a 90-day rollout plan.</p></div>
+  </div>
+</section>
+
+<section aria-labelledby="demo">
+  <div class="sec-head">
+    <span class="eyebrow">For customer meetings</span>
+    <h2 id="demo">Running it as a demo</h2>
+  </div>
+  <div class="two">
+    <div class="box">
+      <h3>30-minute track</h3>
+      <ol>
+        <li><strong>The problem (4 min):</strong> run the three plant scripts and show three answers.</li>
+        <li><strong>AI carries the rules (5 min):</strong> ask the same question before and after adding Gorman’s instruction files.</li>
+        <li><strong>Research before code (10 min):</strong> <span class="mono">/rpi-research</span> live, then open its bug table.</li>
+        <li><strong>One answer (6 min):</strong> tests pass and 77.2% comes out of all four formats.</li>
+        <li><strong>Humans keep the judgment (5 min):</strong> the Gorman KPI Steward agent blocks a risky master-data change.</li>
+      </ol>
+    </div>
+    <div class="box">
+      <h3>Add for the 60-minute track</h3>
+      <ul>
+        <li>Plan with critique (Module 04)</li>
+        <li>Security Reviewer finds the planted secrets (Module 09)</li>
+        <li>Root cause analysis: a Line 3 OEE drop blamed on a new crew turns out to be a master-data change made before the new die arrived (Module 12)</li>
+        <li><span class="mono">/gorman-shift-report</span>, a custom slash command (Module 13)</li>
+      </ul>
+      <p class="note">A setup script builds a fresh workspace at any stage, so you can skip ahead if a live AI step runs slow: <span class="mono">before · instructions · library · ostrava · full</span>.</p>
+    </div>
+  </div>
+</section>
+
+<section class="start" aria-labelledby="start">
+  <span class="eyebrow" style="color:inherit;opacity:.8">Start here</span>
+  <h2 id="start">Get going in 30 minutes</h2>
+  <p>Install the <code style="color:var(--ink)">hve-core</code> plugin in VS Code or GitHub Copilot CLI, then copy the sample project into your own workspace and follow Module 00.</p>
+  <div class="cmdline">
+    <pre id="cmd1">cp -R gorman-sample-project ~/gorman-mes &amp;&amp; cd ~/gorman-mes &amp;&amp; git init &amp;&amp; git add . &amp;&amp; git commit -m "Baseline"</pre>
+    <button class="copy" type="button" id="copy1" data-target="cmd1">Copy</button>
+  </div>
+  <p>Run the commands from inside the <code style="color:var(--ink)">hve-core</code> course folder. Needs VS Code or Copilot CLI, a GitHub Copilot subscription, Git and Python 3.11+.</p>
+</section>
+
+<footer>
+  <p>Built on <a href="https://github.com/microsoft/hve-core" target="_blank" rel="noopener">microsoft/hve-core</a> as of November 2026. HVE Core changes quickly. If an agent name or skill argument differs, the <a href="https://microsoft.github.io/hve-core/" target="_blank" rel="noopener">official documentation</a> is correct.</p>
+  <p>The reference solution has 10 passing tests. The golden shift returns 77.2% for the DET, MTY, PNQ and OSR formats.</p>
+</footer>
+
+</div>
+
+<script>
+const MODULES = [
+  ["00","Setup and orientation","Plugin install, agent picker, slash commands",30,"00-setup"],
+  ["01","Copilot baseline","copilot-instructions.md, hve-builder",30,"01-copilot-instructions"],
+  ["02","Scoped instruction files","*.instructions.md with applyTo",45,"02-instruction-files"],
+  ["03","RPI Research","/rpi-research, /rpi-challenger, /rpi-walkthrough",30,"03-rpi-research"],
+  ["04","RPI Plan","/rpi-plan with independent critique",30,"04-rpi-plan"],
+  ["05","RPI Implement","/rpi-implement, changes log",45,"05-rpi-implement"],
+  ["06","RPI Review","/rpi-review, /rpi-refine, follow-up routing",30,"06-rpi-review"],
+  ["07","RPI Agent end to end","Onboard the Ostrava plant in one session",45,"07-rpi-agent-end-to-end"],
+  ["08","Code review","Code Review agent, opt-in review vectors",30,"08-code-review"],
+  ["09","Security","Security Reviewer, Security Planner (STRIDE)",45,"09-security-review"],
+  ["10","Architecture and docs","ADR Creation, Architecture Reviewer, Documentation",45,"10-architecture-and-docs"],
+  ["11","Requirements and backlog","BRD and PRD Builders, Functional Planner, Backlog Manager",45,"11-requirements-and-backlog"],
+  ["12","Root cause analysis","root-cause-analysis skill on a plant incident",30,"12-root-cause-analysis"],
+  ["13","Custom skills","Gorman slash commands and knowledge skills",45,"13-custom-skills"],
+  ["14","Custom agents","Build the Gorman KPI Steward agent",45,"14-custom-agents"],
+  ["15","HVE Builder","Review, refactor and govern your own artifacts",30,"15-hve-builder"],
+  ["16","ISA-95 network planning","Network ISA-95 Planner, plant edge to Azure",45,"16-isa95-network-planning"],
+  ["17","Team adoption","settings.json, installer skill, phased rollout",30,"17-team-adoption"]
+];
+const CORE = ["00","01","02","03","04","05","06"];
+const PATHS = {
+  all: { ids: MODULES.map(m => m[0]), text: "Every module, from setup to rollout." },
+  core: { ids: CORE, text: "Core: for everyone. Setup, Gorman's standards, and the four RPI phases." },
+  practitioner: { ids: [...CORE,"07","08","09","12"], text: "Practitioner: for plant-team engineers. Core plus RPI Agent, code review, security and root cause analysis." },
+  builder: { ids: [...CORE,"13","14","15"], text: "Builder: for tech leads and platform teams. Core plus building and governing Gorman's own skills and agents." },
+  planner: { ids: ["00","03","09","10","11","16"], text: "Planner: for architects, PMs, OT and security staff. Research, threat models, decisions, requirements and ISA-95." },
+  leader: { ids: ["00","01","07","17"], text: "Leader: for managers rolling out HVE. Setup, the baseline, RPI Agent and the rollout plan, plus the demo." }
+};
+const grid = document.getElementById("modules");
+grid.innerHTML = MODULES.map(([id, name, use, min, folder]) =>
+  `<article class="mod" data-id="${id}"><div class="top"><span class="id">${id}</span><span class="time">${min} min</span></div><h3>${name}</h3><span class="use">${use}</span><span class="folder">${folder}/</span></article>`
+).join("");
+const desc = document.getElementById("path-desc");
+function select(path) {
+  const ids = new Set(PATHS[path].ids);
+  let minutes = 0;
+  grid.querySelectorAll(".mod").forEach(el => {
+    const on = ids.has(el.dataset.id);
+    el.dataset.off = String(!on);
+    if (on) minutes += MODULES.find(m => m[0] === el.dataset.id)[3];
+  });
+  document.querySelectorAll(".chip").forEach(c => c.setAttribute("aria-pressed", String(c.dataset.path === path)));
+  const h = Math.floor(minutes / 60), m = minutes % 60;
+  desc.textContent = `${PATHS[path].text} ${ids.size} modules, about ${h} h${m ? " " + m + " min" : ""}.`;
+  try { localStorage.setItem("gorman-path", path); } catch (e) {}
+}
+document.querySelectorAll(".chip").forEach(c => c.addEventListener("click", () => select(c.dataset.path)));
+let saved = "all";
+try { saved = localStorage.getItem("gorman-path") || "all"; } catch (e) {}
+select(PATHS[saved] ? saved : "all");
+
+document.querySelectorAll(".copy").forEach(btn => btn.addEventListener("click", () => {
+  const pre = document.getElementById(btn.dataset.target);
+  const done = () => { btn.textContent = "Copied"; setTimeout(() => (btn.textContent = "Copy"), 1600); };
+  const fallback = () => {
+    const r = document.createRange(); r.selectNodeContents(pre);
+    const s = getSelection(); s.removeAllRanges(); s.addRange(r);
+    btn.textContent = "Selected — press Ctrl+C";
+  };
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(pre.textContent).then(done, fallback);
+  } else { fallback(); }
+}));
+</script>

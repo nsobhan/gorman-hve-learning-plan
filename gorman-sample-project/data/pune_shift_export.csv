@@ -1,0 +1,4 @@
+plant_code;line;shift_start_utc;planned_sec;downtime_sec;ideal_cycle_ms;produced;rejected
+PNQ;L1;2026-11-02T00:30:00Z;28800;2820;30000;780;39
+PNQ;L1;2026-11-02T08:30:00Z;28800;1500;30000;845;21
+PNQ;L4;2026-11-02T00:30:00Z;28800;4200;20000;1100;88
